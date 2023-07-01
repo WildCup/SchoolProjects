@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game</title>
+    <style>
+      body {
+        background-image: url("/static/space2.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      /* CSS styles for the spaceship */
+      .spaceship {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        background-image: url("/static/spaceship.png");
+      }
+      .meteor {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        background-image: url("/static/asteroid.png");
+        background-size: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="spaceship"></div>
+    <div class="meteor0 meteor"></div>
+    <div class="meteor1 meteor"></div>
+    <div class="meteor2 meteor"></div>
+    <div class="meteor3 meteor"></div>
+    <div class="meteor4 meteor"></div>
+
+    <script>
+      var spaceship = document.querySelector(".spaceship");
+      var meteors = [];
+      for (let i = 0; i < 5; i++) {
+        meteors.push(document.querySelector(".meteor" + i));
+      }
+
+      //   nextGameTick = new Date().getTime() - 100;
+      //   loops = 0;
+      //   maxFrameSkip = 50;
+      //   skipTicks = 10;
+
+      //   while (new Date().getTime() > nextGameTick) {
+      //     nextGameTick += skipTicks;
+
+      //     console.log(new Date().getTime() + " " + nextGameTick);
+      update(0, 0, spaceship, meteors);
+      //   }
+
+      document.addEventListener("keydown", function (event) {
+        var x = 0;
+        var y = 0;
+
+        switch (event.key) {
+          case "w":
+            x = 1;
+            break;
+          case "a":
+            y = -1;
+            break;
+          case "s":
+            x = -1;
+            break;
+          case "d":
+            y = 1;
+            break;
+        }
+        update(x, y, spaceship, meteors);
+      });
+
+      function update(x, y, spaceship, meteors) {
+        var locationData = {
+          x: x,
+          y: y,
+        };
+        fetch("api/move", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(locationData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+
+            if (data.hp <= 0) {
+              window.location.href = "/";
+            }
+
+            spaceship.style.top = -data.player["x"] + "%";
+            spaceship.style.left = data.player["y"] + "%";
+
+            for (let i = 0; i < 5; i++) {
+              meteors[i].style.top = data.rocks[i]["x"] + "%";
+              meteors[i].style.left = data.rocks[i]["y"] + "%";
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </body>
+</html>

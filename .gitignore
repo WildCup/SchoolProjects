@@ -1,0 +1,9 @@
+.vscode
+__pycache__
+.idea
+*.iml
+.vs
+x64
+Debug
+obj
+bin

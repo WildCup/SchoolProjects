@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ game_name }}</title>
+    <style>
+        body {
+            background-image: url("/static/space.jpg");
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: transparent;
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        .button {
+            display: block;
+            margin: 30px auto;
+            padding: 20px 40px;
+            font-size: 36px;
+            font-family: "Helvetica", sans-serif; /* Change the font family */
+            background-color: #FFFFFF;
+            color: #000000;
+            border: none;
+            cursor: pointer;
+            border-radius: 50px; /* Change the border radius for a different shape */
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a box shadow for depth */
+            transition: background-color 0.3s ease-in-out; /* Add a smooth transition on hover */
+        }
+
+        .button:hover {
+            background-color: #EEEEEE; /* Change the background color on hover */
+            color: #333333;
+        }
+
+        h1 {
+            font-size: 96px;
+            margin-bottom: 20px;
+            margin-top: -50px;
+            font-family: "Arial", sans-serif;
+            color: #FFFFFF;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ game_name }}</h1>
+        <input class="name" id="name"></input>
+        <button class="button" id="play-button">PLAY</button>
+        <button class="button" id="highscores-button">HIGHSCORES</button>
+        <button class="button" id="shop-button">SHOP</button>
+    </div>
+
+    <script>
+        document.getElementById("play-button").addEventListener("click", function() {
+            var name = document.getElementById("name").value
+            console.log(name);
+            fetch("api/init", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({"name":name}),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+            window.location.href = "/play";
+        });
+
+        document.getElementById("highscores-button").addEventListener("click", function() {
+            window.location.href = "/score-board";
+        });
+
+        document.getElementById("shop-button").addEventListener("click", function() {
+            window.location.href = "/shop";
+        });
+    </script>
+</body>
+</html>
