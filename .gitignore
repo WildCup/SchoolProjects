@@ -5,5 +5,8 @@ __pycache__
 .vs
 x64
 Debug
-obj
+debug.log
 bin
+obj
+out
+

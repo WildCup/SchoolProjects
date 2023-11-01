@@ -1,0 +1,113 @@
+CREATE TABLE Rarities
+(
+	Id INTEGER PRIMARY KEY NOT NULL,
+	Name VARCHAR(255) NOT NULL,
+	Chance DECIMAL(5,5) NOT NULL
+);
+
+CREATE TABLE Items
+(
+	Id  INTEGER PRIMARY KEY NOT NULL,
+	Name VARCHAR(255) NOT NULL,
+	RarityId INTEGER NOT NULL,
+	FOREIGN KEY (RarityId) REFERENCES Rarities(Id)
+);
+
+CREATE TABLE Types
+(
+	Id INTEGER PRIMARY KEY NOT NULL,
+	Name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Ingredients
+(
+	Id INTEGER PRIMARY KEY NOT NULL,
+	TypeId INTEGER NOT NULL,
+	FOREIGN KEY (Id) REFERENCES Items(Id),
+	FOREIGN KEY (TypeId) REFERENCES Types(Id)
+);
+
+CREATE TABLE Effects
+(
+	Id INTEGER PRIMARY KEY NOT NULL,
+	Name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Potions
+(
+	Id INTEGER PRIMARY KEY NOT NULL,
+	Duration DECIMAL(8,3) NOT NULL,
+	Description VARCHAR(255) NOT NULL,
+	FOREIGN KEY (Id) REFERENCES Items(Id)
+);
+
+CREATE TABLE Potions_Effects
+(
+	PotionId INTEGER NOT NULL,
+	EffectId INTEGER NOT NULL,
+	Strength INTEGER NOT NULL,
+	PRIMARY KEY(PotionId, EffectId),
+	FOREIGN KEY (PotionId) REFERENCES Potions(Id),
+	FOREIGN KEY (EffectId) REFERENCES Effects(Id)
+);
+
+CREATE TABLE Recipes
+(
+	Id INTEGER PRIMARY KEY NOT NULL,
+	PotionId INTEGER NOT NULL,
+	Cooldown DECIMAL(5,2) NOT NULL,
+	FOREIGN KEY (Id) REFERENCES Items(Id),
+	FOREIGN KEY (PotionId) REFERENCES Potions(Id)
+);
+
+CREATE TABLE Recipes_Items
+(
+	RecipeId INTEGER NOT NULL,
+	ItemId INTEGER NOT NULL,
+	Amount INTEGER NOT NULL,
+	PRIMARY KEY(RecipeId, ItemId),
+	FOREIGN KEY (RecipeId) REFERENCES Recipes(Id),
+	FOREIGN KEY (ItemId) REFERENCES Items(Id)
+);
+
+CREATE TABLE Users
+(
+   Id INTEGER PRIMARY KEY NOT NULL,
+   Name VARCHAR(255) NOT NULL,
+   Email VARCHAR(255) NOT NULL,
+   PasswordHash VARCHAR(255) NOT NULL,
+   PasswordSalt VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Players
+(
+   Id INTEGER PRIMARY KEY NOT NULL,
+   UserId INTEGER NOT NULL,
+   Name VARCHAR(255) NOT NULL,
+   Lvl INTEGER NOT NULL,
+   Exp DECIMAL(10,5) NOT NULL,
+   FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+CREATE TABLE Players_Items
+(
+	PlayerId INTEGER NOT NULL,
+	ItemId INTEGER NOT NULL,
+	Amount INTEGER NOT NULL,
+	PRIMARY KEY(PlayerId, ItemId),
+	FOREIGN KEY (PlayerId) REFERENCES Players(Id),
+	FOREIGN KEY (ItemId) REFERENCES Items(Id)
+);
+
+drop table Players_Items;
+drop table Players;
+drop table Users;
+drop table Recipes_Items;
+drop table Recipes;
+drop table Potions_Effects;
+drop table Potions;
+drop table Effects;
+drop table Ingredients;
+drop table Types;
+drop table Items;
+drop table Rarities;
